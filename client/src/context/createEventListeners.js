@@ -65,11 +65,13 @@ export const createEventListeners = ({
   });
 
   const BattleMoveEventFilter = contract.filters.BattleMove();
+
   AddNewEvent(BattleMoveEventFilter, provider, ({ args }) => {
     console.log("Battle move initiated!", args);
   });
 
   const RoundEndedEventFilter = contract.filters.RoundEnded();
+
   AddNewEvent(RoundEndedEventFilter, provider, ({ args }) => {
     console.log("Round ended!", args, walletAddress);
 
@@ -85,5 +87,19 @@ export const createEventListeners = ({
       }
     }
     setUpdateGameData((prevUpdateGameData) => prevUpdateGameData + 1);
+  });
+
+  const BattleEndedEventFilter = contract.filters.BattleEnded();
+
+  AddNewEvent(BattleEndedEventFilter, provider, ({ args }) => {
+    console.log("Battle ended!", args, walletAddress);
+
+    if (walletAddress.toLowerCase() === args.winner.toLowerCase()) {
+      setShowAlert({ status: true, type: "success", message: "You won!" });
+    } else if (walletAddress.toLowerCase() === args.loser.toLowerCase()) {
+      setShowAlert({ status: true, type: "failure", message: "You Lost!" });
+    }
+
+    navigate("/create-battle");
   });
 };

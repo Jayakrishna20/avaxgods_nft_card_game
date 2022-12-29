@@ -33,6 +33,10 @@ export const GlobalContextProvider = ({ children }) => {
   const [updateGameData, setUpdateGameData] = useState(0);
   const [battleGround, setBattleGround] = useState("bg-astral");
   const [step, setStep] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const player1Ref = useRef();
+  const player2Ref = useRef();
 
   const navigate = useNavigate();
 
@@ -100,6 +104,8 @@ export const GlobalContextProvider = ({ children }) => {
         walletAddress,
         setShowAlert,
         setUpdateGameData,
+        player1Ref,
+        player2Ref,
       });
     }
   }, [contract, step]);
@@ -112,6 +118,23 @@ export const GlobalContextProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
+
+  //* Handle error messages
+  useEffect(() => {
+    if (errorMessage) {
+      const parsedErrorMessage = errorMessage?.reason
+        ?.slice("execution reverted: ".length)
+        .slice(0, -1);
+
+      if (parsedErrorMessage) {
+        setShowAlert({
+          status: true,
+          type: "failure",
+          message: parsedErrorMessage,
+        });
+      }
+    }
+  }, [errorMessage]);
 
   //* Set the game data to the state
   useEffect(() => {
@@ -155,6 +178,10 @@ export const GlobalContextProvider = ({ children }) => {
         gameData,
         battleGround,
         setBattleGround,
+        errorMessage,
+        setErrorMessage,
+        player1Ref,
+        player2Ref,
       }}
     >
       {children}

@@ -23,6 +23,9 @@ const Battle = () => {
     walletAddress,
     showAlert,
     setShowAlert,
+    setErrorMessage,
+    player1Ref,
+    player2Ref,
   } = useGlobalContext();
   const [player1, setPlayer1] = useState({});
   const [player2, setPlayer2] = useState({});
@@ -66,7 +69,7 @@ const Battle = () => {
         });
         setPlayer2({ ...player02, att: "X", def: "X", health: p2H, mana: p2M });
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error);
       }
     };
 
@@ -85,9 +88,17 @@ const Battle = () => {
         message: `Initiating ${choice === 1 ? "attack" : "defense"}`,
       });
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!gameData?.activeBattle) navigate("/");
+    }, [2000]);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div
@@ -99,7 +110,12 @@ const Battle = () => {
       <PlayerInfo player={player2} playerIcon={player02Icon} mt />
 
       <div className={`${styles.flexCenter} flex-col my-10`}>
-        <Card card={player2} title={player2?.playerName} cardRef="" playerTwo />
+        <Card
+          card={player2}
+          title={player2?.playerName}
+          cardRef={player2Ref}
+          playerTwo
+        />
 
         <div className="flex items-center flex-row">
           <ActionButton
@@ -110,7 +126,7 @@ const Battle = () => {
           <Card
             card={player1}
             title={player1?.playerName}
-            cardRef=""
+            cardRef={player1Ref}
             restStyles="mt-2"
           />
           <ActionButton

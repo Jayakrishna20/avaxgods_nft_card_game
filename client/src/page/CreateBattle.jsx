@@ -7,7 +7,8 @@ import { GameLoad, PageHOC, CustomButton, CustomInput } from "../components";
 import { gameRules } from "../assets";
 
 const CreateBattle = () => {
-  const { contract, battleName, setBattleName, gameData } = useGlobalContext();
+  const { contract, battleName, setBattleName, gameData, setErrorMessage } =
+    useGlobalContext();
   const [waitBattle, setWaitBattle] = useState(false);
   const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const CreateBattle = () => {
 
       setWaitBattle(true);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
 

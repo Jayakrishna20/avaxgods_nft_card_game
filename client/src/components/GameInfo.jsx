@@ -16,7 +16,9 @@ const GameInfo = () => {
     const batteName = gameData.activeBattle.name;
 
     try {
-      await contract.quitBattle(batteName);
+      await contract.quitBattle(batteName,{
+        gasLimit: 200000,
+      });
 
       setShowAlert({
         status: true,

@@ -31,6 +31,7 @@ export const GlobalContextProvider = ({ children }) => {
     activeBattle: null,
   });
   const [updateGameData, setUpdateGameData] = useState(0);
+  const [battleGround, setBattleGround] = useState("bg-astral");
 
   //* Set the wallet address to the state
   const updateCurrentWalletAddress = async () => {
@@ -88,28 +89,31 @@ export const GlobalContextProvider = ({ children }) => {
   //* Set the game data to the state
   useEffect(() => {
     const fetchGameData = async () => {
-      const fetchedBattles = await contract.getAllBattles();
-      const pendingBattles = fetchedBattles.filter(
-        (battle) => battle.battleStatus === 0
-      );
-      let activeBattle = null;
+      if (contract) {
+        const fetchedBattles = await contract.getAllBattles();
+        const pendingBattles = fetchedBattles.filter(
+          (battle) => battle.battleStatus === 0
+        );
+        let activeBattle = null;
 
-      fetchedBattles.forEach((battle) => {
-        if (
-          battle.players.find(
-            (player) => player.toLowerCase() === walletAddress.toLowerCase()
-          )
-        ) {
-          if (battle.winner.startsWith("0x00")) {
-            activeBattle = battle;
+        fetchedBattles.forEach((battle) => {
+          if (
+            battle.players.find(
+              (player) => player.toLowerCase() === walletAddress.toLowerCase()
+            )
+          ) {
+            if (battle.winner.startsWith("0x00")) {
+              activeBattle = battle;
+            }
           }
-        }
-      });
+        });        
 
-      setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
+        setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
+      }
     };
-    if (contract) fetchGameData();
-  }, [contract, updateGameData]);
+
+    fetchGameData();
+  }, [contract, updateGameData]);  
 
   return (
     <GlobalContext.Provider
@@ -121,6 +125,8 @@ export const GlobalContextProvider = ({ children }) => {
         battleName,
         setBattleName,
         gameData,
+        battleGround,
+        setBattleGround,
       }}
     >
       {children}

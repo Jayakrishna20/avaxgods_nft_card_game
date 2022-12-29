@@ -15,7 +15,6 @@ import { createEventListeners } from "./createEventListeners";
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [walletAddress, setWalletAddress] = useState("");
   const [provider, setProvider] = useState("");
   const [contract, setContract] = useState("");
@@ -32,6 +31,18 @@ export const GlobalContextProvider = ({ children }) => {
   });
   const [updateGameData, setUpdateGameData] = useState(0);
   const [battleGround, setBattleGround] = useState("bg-astral");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const battlegroundFromLocalStorage = localStorage.getItem("battleground");
+
+    if (battlegroundFromLocalStorage) {
+      setBattleGround(battlegroundFromLocalStorage);
+    } else {
+      localStorage.setItem("battleground", battleGround);
+    }
+  }, []);
 
   //* Set the wallet address to the state
   const updateCurrentWalletAddress = async () => {
@@ -106,14 +117,14 @@ export const GlobalContextProvider = ({ children }) => {
               activeBattle = battle;
             }
           }
-        });        
+        });
 
         setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
       }
     };
 
     fetchGameData();
-  }, [contract, updateGameData]);  
+  }, [contract, updateGameData]);
 
   return (
     <GlobalContext.Provider

@@ -1,5 +1,5 @@
 # Avax Gods - Online Multiplayer Web3 NFT Card Game
-![Gameplay](https://ibb.co/wSPfpY2)
+![Gameplay]<img src="https://i.ibb.co/StMzVJZ/Screenshot-181.png" alt="Screenshot-181" border="0">
 
 [Live Site](https://jk-avaxgods.netlify.app/)
 
